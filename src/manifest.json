@@ -1,0 +1,66 @@
+{
+  "manifest_version": 3,
+  "name": "Video Speed Controller",
+  "version": "1.0.0",
+  "description": "Advanced video speed control with content-specific memory for YouTube, Netflix, and other video platforms",
+  "permissions": [
+    "storage",
+    "contextMenus",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "*://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*/*"
+      ],
+      "js": [
+        "storage.js",
+        "content.js"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Video Speed Controller"
+  },
+  "commands": {
+    "toggle-extension": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S"
+      },
+      "description": "Toggle Video Speed Controller on/off"
+    },
+    "increase-speed": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Up",
+        "mac": "Command+Shift+Up"
+      },
+      "description": "Increase video speed by 0.1x"
+    },
+    "decrease-speed": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Down",
+        "mac": "Command+Shift+Down"
+      },
+      "description": "Decrease video speed by 0.1x"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "storage.js"
+      ],
+      "matches": [
+        "*://*/*"
+      ]
+    }
+  ]
+}
