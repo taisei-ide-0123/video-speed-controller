@@ -17,7 +17,6 @@ class PopupController {
       enabledToggle: document.getElementById('enabledToggle'),
       speedSlider: document.getElementById('speedSlider'),
       sliderValue: document.getElementById('sliderValue'),
-      currentSpeedDisplay: document.getElementById('currentSpeedDisplay'),
       mainContent: document.getElementById('mainContent'),
       disabledOverlay: document.getElementById('disabledOverlay'),
       loadingOverlay: document.getElementById('loadingOverlay'),
@@ -174,10 +173,6 @@ class PopupController {
       // Speed slider
       this.elements.speedSlider.value = this.currentState.defaultSpeed;
       this.updateSliderValue(this.currentState.defaultSpeed);
-
-      // Current speed display
-      this.elements.currentSpeedDisplay.textContent = `${this.currentState.currentSpeed}x`;
-
 
       // Disabled overlay
       this.showDisabledOverlay(!this.currentState.enabled);
