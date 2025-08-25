@@ -217,6 +217,14 @@ class PopupController {
             action: 'toggleExtension',
             enabled: enabled
           });
+          
+          // If enabling, also send the current speed to apply
+          if (enabled) {
+            await this.sendMessageToTab({
+              action: 'setSpeed',
+              speed: this.currentState.defaultSpeed
+            });
+          }
         } catch (error) {
           // Content script might not be loaded, which is okay
           console.log('Content script not available, settings saved for next reload');
