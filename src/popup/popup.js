@@ -9,7 +9,6 @@ class PopupController {
     this.currentState = {
       enabled: true,
       currentSpeed: 1.0,
-      contentId: null,
       defaultSpeed: 1.0
     };
 
@@ -19,13 +18,10 @@ class PopupController {
       speedSlider: document.getElementById('speedSlider'),
       sliderValue: document.getElementById('sliderValue'),
       currentSpeedDisplay: document.getElementById('currentSpeedDisplay'),
-      contentDisplay: document.getElementById('contentDisplay'),
       mainContent: document.getElementById('mainContent'),
       disabledOverlay: document.getElementById('disabledOverlay'),
       loadingOverlay: document.getElementById('loadingOverlay'),
-      presetButtons: document.querySelectorAll('.preset-btn'),
-      setContentSpeed: document.getElementById('setContentSpeed'),
-      removeContentSpeed: document.getElementById('removeContentSpeed')
+      presetButtons: document.querySelectorAll('.preset-btn')
     };
 
     this.init();
@@ -90,21 +86,16 @@ class PopupController {
             action: 'getCurrentState'
           });
           
-          if (response && response.success) {
-            this.currentState = { ...this.currentState, ...response.state };
+          if (response && response.success && response.state) {
+            this.currentState.enabled = response.state.enabled || this.currentState.enabled;
+            this.currentState.currentSpeed = response.state.currentSpeed || this.currentState.currentSpeed;
           }
         } catch (error) {
           // Content script might not be loaded yet
           console.log('Content script not ready, using default state');
           
-          // Generate content ID manually
-          if (this.currentTab.url) {
-            this.currentState.contentId = window.videoSpeedStorage.generateContentId(this.currentTab.url);
-            
-            // Try to get content-specific speed
-            const contentSpeed = await window.videoSpeedStorage.getContentSpeed(this.currentState.contentId);
-            this.currentState.currentSpeed = contentSpeed || this.currentState.defaultSpeed;
-          }
+          // Use default speed
+          this.currentState.currentSpeed = this.currentState.defaultSpeed;
         }
       }
     } catch (error) {
@@ -154,14 +145,6 @@ class PopupController {
         });
       });
 
-      // Content-specific actions
-      this.elements.setContentSpeed.addEventListener('click', async () => {
-        await this.setContentSpecificSpeed();
-      });
-
-      this.elements.removeContentSpeed.addEventListener('click', async () => {
-        await this.removeContentSpecificSpeed();
-      });
 
       // Keyboard shortcuts
       document.addEventListener('keydown', async (e) => {
@@ -189,8 +172,6 @@ class PopupController {
       // Current speed display
       this.elements.currentSpeedDisplay.textContent = `${this.currentState.currentSpeed}x`;
 
-      // Content display
-      this.updateContentDisplay();
 
       // Disabled overlay
       this.showDisabledOverlay(!this.currentState.enabled);
@@ -209,36 +190,6 @@ class PopupController {
     this.elements.sliderValue.textContent = `${value}x`;
   }
 
-  /**
-   * Update content display
-   */
-  updateContentDisplay() {
-    try {
-      if (!this.currentTab || !this.currentTab.url) {
-        this.elements.contentDisplay.textContent = 'No active tab';
-        return;
-      }
-
-      const url = new URL(this.currentTab.url);
-      let displayText = '';
-
-      if (url.hostname.includes('youtube.com')) {
-        displayText = 'YouTube';
-      } else if (url.hostname.includes('netflix.com')) {
-        displayText = 'Netflix';
-      } else if (url.hostname.includes('twitch.tv')) {
-        displayText = 'Twitch';
-      } else if (url.hostname.includes('vimeo.com')) {
-        displayText = 'Vimeo';
-      } else {
-        displayText = url.hostname;
-      }
-
-      this.elements.contentDisplay.textContent = displayText;
-    } catch (error) {
-      this.elements.contentDisplay.textContent = 'Unknown';
-    }
-  }
 
   /**
    * Update preset button states
@@ -340,54 +291,6 @@ class PopupController {
     }
   }
 
-  /**
-   * Set content-specific speed
-   */
-  async setContentSpecificSpeed() {
-    try {
-      if (!this.currentTab) {
-        this.showError('No active tab');
-        return;
-      }
-
-      // Send message to content script
-      await this.sendMessageToTab({
-        action: 'setContentSpeed',
-        speed: this.currentState.currentSpeed
-      });
-
-      this.showSuccess('Speed saved for this content');
-    } catch (error) {
-      console.error('Error setting content-specific speed:', error);
-      this.showError('Failed to save content speed');
-    }
-  }
-
-  /**
-   * Remove content-specific speed
-   */
-  async removeContentSpecificSpeed() {
-    try {
-      if (!this.currentTab) {
-        this.showError('No active tab');
-        return;
-      }
-
-      // Send message to content script
-      await this.sendMessageToTab({
-        action: 'removeContentSpeed'
-      });
-
-      // Update current speed to default
-      this.currentState.currentSpeed = this.currentState.defaultSpeed;
-      this.updateUI();
-
-      this.showSuccess('Content speed setting removed');
-    } catch (error) {
-      console.error('Error removing content-specific speed:', error);
-      this.showError('Failed to remove content speed');
-    }
-  }
 
   /**
    * Send message to current tab's content script
