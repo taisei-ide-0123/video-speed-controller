@@ -141,6 +141,12 @@ class PopupController {
       this.elements.presetButtons.forEach(button => {
         button.addEventListener('click', async () => {
           const speed = parseFloat(button.dataset.speed);
+          // Update the slider value
+          this.elements.speedSlider.value = speed;
+          this.updateSliderValue(speed);
+          // Set as default speed
+          await this.setDefaultSpeed(speed);
+          // Apply to current video
           await this.setCurrentSpeed(speed);
         });
       });
