@@ -8,14 +8,27 @@
 </head>
 <body>
   <div class="container">
+    <!-- Background Animation -->
+    <div class="bg-animation"></div>
     <!-- Header -->
     <header class="header">
-      <h1 class="title">Video Speed Controller</h1>
-      <div class="toggle-container">
-        <label class="toggle-switch">
-          <input type="checkbox" id="enabledToggle">
-          <span class="toggle-slider"></span>
-        </label>
+      <div class="header-content">
+        <div class="title-section">
+          <div class="icon-wrapper">
+            <svg class="app-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 5v14l11-7z" fill="currentColor"/>
+            </svg>
+          </div>
+          <h1 class="title">Video Speed Controller</h1>
+        </div>
+        <div class="toggle-container">
+          <label class="toggle-switch" for="enabledToggle">
+            <input type="checkbox" id="enabledToggle" aria-label="Enable video speed control">
+            <span class="toggle-slider">
+              <span class="toggle-button"></span>
+            </span>
+          </label>
+        </div>
       </div>
     </header>
 
@@ -25,25 +38,51 @@
       <section class="speed-control-section">
         <!-- Speed Slider -->
         <div class="slider-container">
-          <label class="slider-label" for="speedSlider">Current Speed</label>
+          <div class="slider-header">
+            <label class="slider-label" for="speedSlider">Playback Speed</label>
+            <div class="speed-display">
+              <span class="slider-value" id="sliderValue">1.0x</span>
+            </div>
+          </div>
           <div class="slider-wrapper">
             <span class="slider-min">0.5x</span>
-            <input type="range" id="speedSlider" class="speed-slider" 
-                   min="0.5" max="5.0" step="0.1" value="1.0">
+            <div class="slider-track-container">
+              <input type="range" id="speedSlider" class="speed-slider" 
+                     min="0.5" max="5.0" step="0.1" value="1.0" 
+                     aria-label="Video playback speed">
+            </div>
             <span class="slider-max">5.0x</span>
           </div>
-          <div class="slider-value" id="sliderValue">1.0x</div>
         </div>
 
         <!-- Preset Buttons -->
         <div class="preset-container">
           <h3 class="preset-title">Quick Presets</h3>
           <div class="preset-buttons">
-            <button class="preset-btn" data-speed="0.5">0.5x</button>
-            <button class="preset-btn" data-speed="1.0">1.0x</button>
-            <button class="preset-btn" data-speed="1.5">1.5x</button>
-            <button class="preset-btn" data-speed="2.0">2.0x</button>
-            <button class="preset-btn" data-speed="3.0">3.0x</button>
+            <button class="preset-btn" data-speed="0.5" aria-label="Set speed to 0.5x">
+              <span class="preset-speed">0.5x</span>
+              <span class="preset-label">Slow</span>
+            </button>
+            <button class="preset-btn" data-speed="0.75" aria-label="Set speed to 0.75x">
+              <span class="preset-speed">0.75x</span>
+              <span class="preset-label">Slower</span>
+            </button>
+            <button class="preset-btn active" data-speed="1.0" aria-label="Set speed to 1.0x">
+              <span class="preset-speed">1.0x</span>
+              <span class="preset-label">Normal</span>
+            </button>
+            <button class="preset-btn" data-speed="1.5" aria-label="Set speed to 1.5x">
+              <span class="preset-speed">1.5x</span>
+              <span class="preset-label">Fast</span>
+            </button>
+            <button class="preset-btn" data-speed="2.0" aria-label="Set speed to 2.0x">
+              <span class="preset-speed">2.0x</span>
+              <span class="preset-label">Faster</span>
+            </button>
+            <button class="preset-btn" data-speed="3.0" aria-label="Set speed to 3.0x">
+              <span class="preset-speed">3.0x</span>
+              <span class="preset-label">Rapid</span>
+            </button>
           </div>
         </div>
 
@@ -53,16 +92,28 @@
 
     <!-- Disabled State Overlay -->
     <div class="disabled-overlay" id="disabledOverlay">
-      <div class="disabled-message">
-        <h2>Extension Disabled</h2>
-        <p>Toggle the switch above to enable video speed control.</p>
+      <div class="disabled-content">
+        <div class="disabled-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM4 12c0-4.42 3.58-8 8-8 1.85 0 3.55.63 4.9 1.69L5.69 16.9C4.63 15.55 4 13.85 4 12zm8 8c-1.85 0-3.55-.63-4.9-1.69L18.31 7.1C19.37 8.45 20 10.15 20 12c0 4.42-3.58 8-8 8z" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="disabled-message">
+          <h2>Extension Disabled</h2>
+          <p>Toggle the switch above to enable video speed control and unlock all features.</p>
+        </div>
       </div>
     </div>
 
     <!-- Loading State -->
     <div class="loading-overlay" id="loadingOverlay">
-      <div class="loading-spinner"></div>
-      <p>Loading settings...</p>
+      <div class="loading-content">
+        <div class="loading-spinner-container">
+          <div class="loading-spinner"></div>
+          <div class="loading-pulse"></div>
+        </div>
+        <p class="loading-text">Loading settings...</p>
+      </div>
     </div>
   </div>
 
